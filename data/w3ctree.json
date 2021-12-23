@@ -1,0 +1,60 @@
+{
+    "id": "2",
+    "name": "Testbaum",
+    "rootnode": {
+      "id": 0,
+      "name": "Bevarages",
+      "level": 0,
+      "children": [
+        {
+          "id":1,
+          "name": "Water",
+          "level": 1,
+          "children":[]
+        },
+        {
+          "id":2,
+          "name": "Coffee",
+          "level": 1,
+          "children":[]
+        },
+        {
+          "id":3,
+          "name": "Tea",
+          "level": 1,
+          "children":[
+           {
+            "id":4,
+            "name": "Black Tea",
+            "level": 2,
+            "children":[]
+           },
+           {
+            "id":5,
+            "name": "White Tea",
+            "level": 2,
+            "children":[]
+           },
+           {
+            "id":6,
+            "name": "Gree Tea",
+            "level": 2,
+            "children":[
+              {
+                "id":7,
+                "name": "Sencha",
+                "level": 3,
+                "children":[]
+              },
+              {
+                "id":8,
+                "name": "Matcha",
+                "level": 3,
+                "children":[]
+              }        
+            ]
+           }
+          ]
+        }]
+    }
+  }

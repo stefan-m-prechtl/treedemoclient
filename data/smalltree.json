@@ -1,0 +1,70 @@
+{
+  "id": "2",
+  "name": "Testbaum",
+  "rootnode": {
+    "id": 0,
+    "name": "K1",
+    "level": 0,
+    "children": [{
+      "id": 1,
+      "name": "K1.0",
+      "level": 1,
+      "children": [{
+        "id": 4,
+        "name": "K1.0.0",
+        "level": 2,
+        "children": []
+      }, {
+        "id": 5,
+        "name": "K1.0.1",
+        "level": 2,
+        "children": []
+      }, {
+        "id": 6,
+        "name": "K1.0.2",
+        "level": 2,
+        "children": []
+      }]
+    }, {
+      "id": 2,
+      "name": "K1.1",
+      "level": 1,
+      "children": [{
+        "id": 7,
+        "name": "K1.1.0",
+        "level": 2,
+        "children": []
+      }, {
+        "id": 8,
+        "name": "K1.1.1",
+        "level": 2,
+        "children": []
+      }, {
+        "id": 9,
+        "name": "K1.1.2",
+        "level": 2,
+        "children": []
+      }]
+    }, {
+      "id": 3,
+      "name": "K1.2",
+      "level": 1,
+      "children": [{
+        "id": 10,
+        "name": "K1.2.0",
+        "level": 2,
+        "children": []
+      }, {
+        "id": 11,
+        "name": "K1.2.1",
+        "level": 2,
+        "children": []
+      }, {
+        "id": 12,
+        "name": "K1.2.2",
+        "level": 2,
+        "children": []
+      }]
+    }]
+  }
+}
