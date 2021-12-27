@@ -1,3 +1,5 @@
+const $ = document.querySelector.bind(document)
+
 function init() {
 
     let toggler = document.getElementsByClassName("caret");
@@ -5,7 +7,15 @@ function init() {
 
     for (i = 0; i < toggler.length; i++) {
         toggler[i].addEventListener("click", function () {
-            this.parentElement.querySelector(".nested").classList.toggle("active");
+            if (this.parentElement.querySelector(".nested") != null) {
+                this.parentElement.querySelector(".nested").classList.toggle("active");
+            }
+            else {
+
+                let nodeID = this.getAttribute('data-id');
+                console.log(nodeID);
+
+            }
             this.classList.toggle("caret-down");
         });
     }
@@ -13,7 +23,7 @@ function init() {
 
 async function loadData() {
     //await fetch('data/bigtree.json')
-    await fetch('http://localhost:8080/app/demo/treemgmt/fulltree/15')
+    await fetch('http://localhost:8080/app/demo/treemgmt/fulltree/35')
         .then(function (response) {
             return response.json();
         })
@@ -41,7 +51,8 @@ function convertJsonToTableView(tree) {
         let children = node.children;
 
         if (children.length == 0) {
-            result += '<li>' + node.name + '(' + node.level + ')</li>';
+            // result += '<li>' + node.name + '(' + node.level + ')</li>';
+            result += '<li><span class="caret" data-id="' + node.id + '">' + node.name + '(' + node.id + ')</span></li>';
         }
 
         if (node.level < previousLevel) {
@@ -53,7 +64,7 @@ function convertJsonToTableView(tree) {
         }
 
         if (children.length > 0) {
-            result += '<li><span class="caret">' + node.name + '(' + node.level + ')</span><ul class="nested">';
+            result += '<li><span class="caret" data-id="' + node.id + '">' + node.name + '(' + node.id + ')</span><ul class="nested">';
             closingTagsStack.push('</li>');
             closingTagsStack.push('</ul>');
         }
