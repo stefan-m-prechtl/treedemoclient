@@ -21,9 +21,9 @@ function init() {
     }
 }
 
-async function loadData() {
+async function loadData(treeId) {
     //await fetch('data/bigtree.json')
-    await fetch('http://localhost:8080/app/demo/treemgmt/fulltree/35')
+    await fetch(`http://localhost:8080/app/demo/treemgmt/fulltree/${treeId}`)
         .then(function (response) {
             return response.json();
         })
@@ -34,6 +34,10 @@ async function loadData() {
         })
 
         .catch(err => console.log(err));
+}
+
+async function loadNodeData(nodeId) {
+    
 }
 
 function convertJsonToTableView(tree) {
@@ -51,8 +55,7 @@ function convertJsonToTableView(tree) {
         let children = node.children;
 
         if (children.length == 0) {
-            // result += '<li>' + node.name + '(' + node.level + ')</li>';
-            result += '<li><span class="caret" data-id="' + node.id + '">' + node.name + '(' + node.id + ')</span></li>';
+            result += `<li><span class="caret" data-id="${node.id}">${node.name} (${node.id})</span></li>`;
         }
 
         if (node.level < previousLevel) {
@@ -64,7 +67,7 @@ function convertJsonToTableView(tree) {
         }
 
         if (children.length > 0) {
-            result += '<li><span class="caret" data-id="' + node.id + '">' + node.name + '(' + node.id + ')</span><ul class="nested">';
+            result += `<li><span class="caret" data-id="${node.id}">${node.name} (${node.id})</span><ul class="nested">`;
             closingTagsStack.push('</li>');
             closingTagsStack.push('</ul>');
         }
@@ -85,6 +88,7 @@ function convertJsonToTableView(tree) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadData();
+    let treeID = 3
+    await loadData(treeID);
     init();
 });
