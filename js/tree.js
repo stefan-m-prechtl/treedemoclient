@@ -22,12 +22,12 @@ HTMLCollection.prototype.__proto__ = Array.prototype;
 const treeTemplate = (node) => html`
     <ul id="Baum">
     <li><span class="caret" data-id="${node.id}">${node.name} (${node.id})</span>
-        <ul class="nested">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (${childnode.id})</span></li>`)}</ul>
+        <ul class="nested">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
     </li>
     </ul>`;
 
 document.addEventListener('DOMContentLoaded', async () => {
-    let treeID = 1
+    let treeID = 35
     main(treeID);
 });
 
@@ -42,18 +42,20 @@ function showData(jsonDataTree) {
     // HTML rendern
     let div = $('#placeholderTree');
     render(treeTemplate(jsonDataTree.rootnode), div);
+    createEventListenerTree();
+
+}
+
+function createEventListenerTree() {
     // Event-Listener registrieren
     let carets = $$(".caret");
     carets.forEach(caret => {
         caret.on('click', () => {
             let parent = caret.parentElement;
             let ul = parent.querySelector(".nested");
-            if (ul) {
-                ul.classList.toggle("active");
-                caret.classList.toggle("caret-down");
-            }
+            ul.classList.toggle("active");
+            caret.classList.toggle("caret-down");
         });
-
     });
 }
 
