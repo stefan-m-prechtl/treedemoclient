@@ -27,7 +27,7 @@ const treeTemplate = (treeID, node) => html`
     </ul>`;
 
 const nodeTemplate = (node) => html`
-    <li><span class="caret" data-id="${node.id}">${node.name} (${node.id})</span>
+    <li><span class="caret caret-down" data-id="${node.id}">${node.name} (${node.id})</span>
         <ul class="nested active">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
     </li>
 `;
