@@ -1,3 +1,10 @@
+table, th, td {
+    border:1px solid black;
+    border-collapse:collapse;
+    padding-left: 1rem;
+    padding-right: 0.5rem;
+}
+
 ul,
 #baum {
     list-style-type: none;

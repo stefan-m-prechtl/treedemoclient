@@ -20,33 +20,60 @@ HTMLCollection.prototype.__proto__ = Array.prototype;
 
 // Html-Templates für Rendering mit lit-html
 const treeTemplate = (treeID, node) => html`
+    <p>Baum mit ID ${treeID}</p>
     <ul class="tree" data-id="${treeID}">
     <li><span class="caret" data-id="${node.id}">${node.name} (${node.id})</span>
         <ul class="nested">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
     </li>
     </ul>`;
 
+const treeEmptyTemplate = html``;
+
+const treeInfosTemplate = (treeinfos) => html`
+  <table class=treeinfo">
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Anzahl Knoten</th>
+  </tr>
+  ${treeinfos.map(info => html`<tr>
+    <td><button data-id="${info.id}">Lade ${info.id}</button></td>
+    <td>${info.name}</td>
+    <td>${info.countNodes}</td>
+    </tr>`)}
+  </table>`;
+
 const nodeTemplate = (node) => html`
     <li><span class="caret caret-down" data-id="${node.id}">${node.name} (${node.id})</span>
         <ul class="nested active">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
-    </li>
-`;
+    </li>`;
 
+// Einstieg "Main"-Funktion    
 document.addEventListener('DOMContentLoaded', async () => {
-    let treeID = 1
-    main(treeID);
+    main();
 });
 
-async function main(treeID) {
-    // JSON-Daten laden
-    let jsonDataTree = await loadTree(treeID);
+async function main() {
+
+    // Info-Daten für alle Bäume laden
+    let jsonDataTreeInfos = await loadTreeInfos();
     // JSON-Daten in DOM einfügen
-    showData(treeID, jsonDataTree);
+    showInfoData(jsonDataTreeInfos);
 }
+
+function showInfoData(jsonDataTreeInfos) {
+    // JSON-Daten als HTML rendern
+    let div = $('#placeholderTreeInfos');
+    render(treeInfosTemplate(jsonDataTreeInfos), div);
+    // Eventlistener für alle Buttons in Baumübersichtstabelle registieren
+    createEventListenerTreeInfos();
+}
+
 
 function showData(treeID, jsonDataTree) {
     // JSON-Daten als HTML rendern
     let div = $('#placeholderTree');
+    render(treeEmptyTemplate, div);
     render(treeTemplate(treeID, jsonDataTree.rootnode), div);
     // Eventlistener für alle Baumknoten registieren
     createEventListenerTree();
@@ -63,6 +90,14 @@ function handleClickNode(caret) {
     caret.classList.toggle("caret-down");
 }
 
+async function handleClickButton(button) {
+    let treeID = button.getAttribute('data-id');
+    // JSON-Daten laden
+    let jsonDataTree = await loadTree(treeID);
+    // JSON-Daten in DOM einfügen
+    showData(treeID, jsonDataTree);
+}
+
 function createEventListenerTree() {
     // Event-Listener registrieren
     let carets = $$(".caret");
@@ -72,6 +107,17 @@ function createEventListenerTree() {
         });
     });
 }
+
+function createEventListenerTreeInfos() {
+    // Event-Listener registrieren
+    let buttons = $$("button");
+    buttons.forEach(button => {
+        button.on('click', function () {
+            handleClickButton(button);
+        });
+    });
+}
+
 
 function createEventListenerNode(nodeID) {
     // Event-Listener registrieren
@@ -116,3 +162,15 @@ async function loadTree(treeID) {
         console.log(`Fehler:${err}`);
     }
 }
+
+async function loadTreeInfos() {
+    try {
+        let response = await fetch(`http://localhost:8080/app/demo/treemgmt/fulltree`);
+        let result = await response.json();
+        return result;
+    }
+    catch (err) {
+        console.log(`Fehler:${err}`);
+    }
+}
+
