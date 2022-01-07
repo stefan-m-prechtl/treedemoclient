@@ -22,8 +22,8 @@ HTMLCollection.prototype.__proto__ = Array.prototype;
 const treeTemplate = (treeID, node) => html`
     <p>Baum mit ID ${treeID}</p>
     <ul class="tree" data-id="${treeID}">
-    <li><span class="caret" data-id="${node.id}">${node.name} (${node.id})</span>
-        <ul class="nested">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
+    <li><span class="caret" data-id="${node.id}">${node.name} (ID=${node.id})</span>
+        <ul class="nested">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (ID=${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
     </li>
     </ul>`;
 
@@ -44,8 +44,8 @@ const treeInfosTemplate = (treeinfos) => html`
   </table>`;
 
 const nodeTemplate = (node) => html`
-    <li><span class="caret caret-down" data-id="${node.id}">${node.name} (${node.id})</span>
-        <ul class="nested active">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
+    <li><span class="caret caret-down" data-id="${node.id}">${node.name} (ID=${node.id})</span>
+        <ul class="nested active">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (ID=${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
     </li>`;
 
 // Einstieg "Main"-Funktion    
@@ -73,7 +73,9 @@ function showInfoData(jsonDataTreeInfos) {
 function showData(treeID, jsonDataTree) {
     // JSON-Daten als HTML rendern
     let div = $('#placeholderTree');
+    // (Shadow-)DOM rücksetzen durch Rendern eines anderen Lit-Templates
     render(treeEmptyTemplate, div);
+    // Echte Daten rendern
     render(treeTemplate(treeID, jsonDataTree.rootnode), div);
     // Eventlistener für alle Baumknoten registieren
     createEventListenerTree();
@@ -109,7 +111,7 @@ function createEventListenerTree() {
 }
 
 function createEventListenerTreeInfos() {
-    // Event-Listener registrieren
+    // Event-Listener für alle Buttons registrieren
     let buttons = $$("button");
     buttons.forEach(button => {
         button.on('click', function () {
@@ -117,7 +119,6 @@ function createEventListenerTreeInfos() {
         });
     });
 }
-
 
 function createEventListenerNode(nodeID) {
     // Event-Listener registrieren
