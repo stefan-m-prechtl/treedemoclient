@@ -1,15 +1,32 @@
 import { html, render } from './node_modules/lit-html/lit-html.js'
 
+
+// Einstieg "Main"-Funktion    
+document.addEventListener('DOMContentLoaded', async() => {
+    main();
+});
+
+async function main() {
+
+    // Info-Daten für alle Bäume laden
+    let jsonDataTreeInfos = await loadTreeInfos();
+    // JSON-Daten in DOM einfügen
+    showInfoData(jsonDataTreeInfos);
+}
+
+
+//***** VIEW ***********************************************************
+
 // JQuery like Selektoren
 const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
 // JQuery like Eventhandler
-Node.prototype.on = function (name, fn) {
+Node.prototype.on = function(name, fn) {
     this.addEventListener(name, fn);
     return this;
 };
-NodeList.prototype.on = NodeList.prototype.on = function (name, fn) {
+NodeList.prototype.on = NodeList.prototype.on = function(name, fn) {
     this.forEach((elem) => elem.on(name, fn));
     return this;
 };
@@ -19,7 +36,7 @@ NodeList.prototype.__proto__ = Array.prototype;
 HTMLCollection.prototype.__proto__ = Array.prototype;
 
 // Html-Templates für Rendering mit lit-html
-const treeTemplate = (treeID, node) => html`
+const treeTemplate = (treeID, node) => html `
     <p>Baum mit ID ${treeID}</p>
     <ul class="tree" data-id="${treeID}">
     <li><span class="caret" data-id="${node.id}">${node.name} (ID=${node.id})</span>
@@ -48,18 +65,7 @@ const nodeTemplate = (node) => html`
         <ul class="nested active">${node.children.map(childnode => html`<li><span class="caret" data-id="${childnode.id}">${childnode.name} (ID=${childnode.id})</span><ul class="nested"></ul></li>`)}</ul>
     </li>`;
 
-// Einstieg "Main"-Funktion    
-document.addEventListener('DOMContentLoaded', async () => {
-    main();
-});
 
-async function main() {
-
-    // Info-Daten für alle Bäume laden
-    let jsonDataTreeInfos = await loadTreeInfos();
-    // JSON-Daten in DOM einfügen
-    showInfoData(jsonDataTreeInfos);
-}
 
 function showInfoData(jsonDataTreeInfos) {
     // JSON-Daten als HTML rendern
@@ -81,23 +87,15 @@ function showData(treeID, jsonDataTree) {
     createEventListenerTree();
 }
 
-function handleClickNode(caret) {
-    let parent = caret.parentElement;
-    let ul = parent.querySelector(".nested");
-    if (ul.childElementCount === 0) {
-        let nodeID = caret.getAttribute('data-id');
-        expandNode(nodeID);
-    }
-    ul.classList.toggle("active");
-    caret.classList.toggle("caret-down");
-}
 
-async function handleClickButton(button) {
-    let treeID = button.getAttribute('data-id');
-    // JSON-Daten laden
-    let jsonDataTree = await loadTree(treeID);
-    // JSON-Daten in DOM einfügen
-    showData(treeID, jsonDataTree);
+function createEventListenerTreeInfos() {
+    // Event-Listener für alle Buttons registrieren
+    let buttons = $$("button");
+    buttons.forEach(button => {
+        button.on('click', function () {
+            handleClickButton(button);
+        });
+    });
 }
 
 function createEventListenerTree() {
@@ -106,16 +104,6 @@ function createEventListenerTree() {
     carets.forEach(caret => {
         caret.on('click', function () {
             handleClickNode(caret);
-        });
-    });
-}
-
-function createEventListenerTreeInfos() {
-    // Event-Listener für alle Buttons registrieren
-    let buttons = $$("button");
-    buttons.forEach(button => {
-        button.on('click', function () {
-            handleClickButton(button);
         });
     });
 }
@@ -131,6 +119,26 @@ function createEventListenerNode(nodeID) {
     });
 }
 
+async function handleClickButton(button) {
+    let treeID = button.getAttribute('data-id');
+    // JSON-Daten laden
+    let jsonDataTree = await loadTree(treeID);
+    // JSON-Daten in DOM einfügen
+    showData(treeID, jsonDataTree);
+}
+
+function handleClickNode(caret) {
+    let parent = caret.parentElement;
+    let ul = parent.querySelector(".nested");
+    if (ul.childElementCount === 0) {
+        let nodeID = caret.getAttribute('data-id');
+        expandNode(nodeID);
+    }
+    ul.classList.toggle("active");
+    caret.classList.toggle("caret-down");
+}
+
+
 async function expandNode(nodeID) {
     // JSON-Daten für Knoten laden
     let treeID = $('.tree').getAttribute('data-id');
@@ -141,6 +149,9 @@ async function expandNode(nodeID) {
     // Event-Listener für Kindknoten registrieren
     createEventListenerNode(nodeID);
 }
+
+
+//***** CONTROLLER  ***********************************************************
 
 async function loadNode(treeID, nodeID) {
     try {
@@ -156,6 +167,7 @@ async function loadNode(treeID, nodeID) {
 async function loadTree(treeID) {
     try {
         let response = await fetch(`http://localhost:8080/app/demo/treemgmt/fulltree/${treeID}`);
+        //let response = await fetch(`http://localhost:8080/app/demo/treemgmt/fulltree/${treeID}?all=yes`);
         let result = await response.json();
         return result;
     }
@@ -174,4 +186,3 @@ async function loadTreeInfos() {
         console.log(`Fehler:${err}`);
     }
 }
-
